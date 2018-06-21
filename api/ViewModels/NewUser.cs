@@ -6,10 +6,10 @@ namespace aspnetCoreReactTemplate.ViewModels
     {
         [Required]
         [EmailAddress]
-        public string username { get; set; }
+        public string Username { get; set; }
 
         [Required]
         [MinLength(8)]
-        public string password { get; set; }
+        public string Password { get; set; }
 }
 }

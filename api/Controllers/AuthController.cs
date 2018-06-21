@@ -1,10 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -17,7 +13,6 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Text;
-using Microsoft.Extensions.Configuration;
 
 namespace aspnetCoreReactTemplate.Controllers
 {
@@ -103,8 +98,8 @@ namespace aspnetCoreReactTemplate.Controllers
                 return BadRequest(ModelState);
             }
 
-            var user = new ApplicationUser { UserName = model.username, Email = model.username };
-            var result = await _userManager.CreateAsync(user, model.password);
+            var user = new ApplicationUser { UserName = model.Username, Email = model.Username };
+            var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
                 _logger.LogInformation($"New user registered (id: {user.Id})");
@@ -114,7 +109,7 @@ namespace aspnetCoreReactTemplate.Controllers
                     // Send email confirmation email
                     var confirmToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     var emailConfirmUrl = Url.RouteUrl("ConfirmEmail", new { uid = user.Id, token = confirmToken }, this.Request.Scheme);
-                    await _emailSender.SendEmailAsync(model.username, "Please confirm your account",
+                    await _emailSender.SendEmailAsync(model.Username, "Please confirm your account",
     $"Please confirm your account by clicking this <a href=\"{emailConfirmUrl}\">link</a>."
                     );
 

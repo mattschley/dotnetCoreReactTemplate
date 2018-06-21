@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace aspnetCoreReactTemplate.Models
 {
@@ -10,9 +9,9 @@ namespace aspnetCoreReactTemplate.Models
     {
         private readonly DefaultDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly RoleManager<ApplicationRole> _roleManager;
 
-        public DefaultDbContextInitializer(DefaultDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+        public DefaultDbContextInitializer(DefaultDbContext context, UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager)
         {
             _userManager = userManager;
             _context = context;
@@ -32,6 +31,7 @@ namespace aspnetCoreReactTemplate.Models
         public async Task Seed()
         {
             var email = "user@test.com";
+            
             if (await _userManager.FindByEmailAsync(email) == null)
             {
                 var user = new ApplicationUser
