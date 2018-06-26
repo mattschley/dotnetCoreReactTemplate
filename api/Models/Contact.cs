@@ -1,11 +1,10 @@
 using System.ComponentModel.DataAnnotations;
+using api.Models;
 
 namespace aspnetCoreReactTemplate.Models
 {
-    public class Contact
+    public class Contact: Entity<int>
     {
-        public int Id { get; set; }
-
         [Required]
         [MinLength(3)]
         public string LastName { get; set; }

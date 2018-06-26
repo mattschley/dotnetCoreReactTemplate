@@ -19,7 +19,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
     <PackageReference Include="AspNet.Security.OAuth.Validation" Version="2.0.0-*" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="2.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="2.5.0" />
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.0" />
@@ -27,5 +27,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="log\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\api.data\api.data.csproj" />
   </ItemGroup>
 </Project>

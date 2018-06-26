@@ -14,6 +14,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Collections.Generic;
 using Newtonsoft.Json.Serialization;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace aspnetCoreReactTemplate
 {
@@ -72,7 +73,13 @@ namespace aspnetCoreReactTemplate
                 options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             });
-        }
+
+          services.AddSwaggerGen(c =>
+          {
+            c.SwaggerDoc("v1", new Info { Title = "API", Version = "v1" });
+          });
+
+    }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
@@ -81,43 +88,50 @@ namespace aspnetCoreReactTemplate
             loggerFactory.AddConsole(Configuration.GetSection("logging"));
             loggerFactory.AddDebug();
 
-            if (env.IsDevelopment())
-            {
-                // Configure Webpack Middleware (Ref: http://blog.stevensanderson.com/2016/05/02/angular2-react-knockout-apps-on-aspnet-core/)
-                //  - Intercepts requests for webpack bundles and routes them through Webpack - this prevents needing to run Webpack file watcher separately
-                //  - Enables Hot module replacement (HMR)
-                app.UseWebpackDevMiddleware(new WebpackDevMiddlewareOptions
-                {
-                    HotModuleReplacement = true,
-                    HotModuleReplacementClientOptions = new Dictionary<string, string> {{ "reload", "true" }},
-                    ReactHotModuleReplacement = true,
-                    ConfigFile = System.IO.Path.Combine(Configuration["webClientPath"], "webpack.config.js")
-                });
+            app.UseSwagger();
 
-                app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
-            }
+        app.UseSwaggerUI(c =>
+        {
+          c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+        });
 
-            // If not requesting /api*, rewrite to / so SPA app will be returned
-            app.UseSpaFallback(new SpaFallbackOptions()
-            {
-                ApiPathPrefix = "/api",
-                RewritePath = "/"
-            });
+        if (env.IsDevelopment())
+                  {
+                      // Configure Webpack Middleware (Ref: http://blog.stevensanderson.com/2016/05/02/angular2-react-knockout-apps-on-aspnet-core/)
+                      //  - Intercepts requests for webpack bundles and routes them through Webpack - this prevents needing to run Webpack file watcher separately
+                      //  - Enables Hot module replacement (HMR)
+                      app.UseWebpackDevMiddleware(new WebpackDevMiddlewareOptions
+                      {
+                          HotModuleReplacement = true,
+                          HotModuleReplacementClientOptions = new Dictionary<string, string> {{ "reload", "true" }},
+                          ReactHotModuleReplacement = true,
+                          ConfigFile = System.IO.Path.Combine(Configuration["webClientPath"], "webpack.config.js")
+                      });
 
-            app.UseDefaultFiles();
-            app.UseStaticFiles();
+                      app.UseDeveloperExceptionPage();
+                      app.UseDatabaseErrorPage();
+                  }
 
-            app.UseForwardedHeaders(new ForwardedHeadersOptions
-            {
-                // Read and use headers coming from reverse proxy: X-Forwarded-For X-Forwarded-Proto
-                // This is particularly important so that HttpContet.Request.Scheme will be correct behind a SSL terminating proxy
-                ForwardedHeaders = ForwardedHeaders.XForwardedFor |
-                ForwardedHeaders.XForwardedProto
-            });
+                  // If not requesting /api*, rewrite to / so SPA app will be returned
+                  app.UseSpaFallback(new SpaFallbackOptions()
+                  {
+                      ApiPathPrefix = "/api",
+                      RewritePath = "/"
+                  });
 
-            app.UseAuthentication();
-            app.UseMvc();
+                  app.UseDefaultFiles();
+                  app.UseStaticFiles();
+
+                  app.UseForwardedHeaders(new ForwardedHeadersOptions
+                  {
+                      // Read and use headers coming from reverse proxy: X-Forwarded-For X-Forwarded-Proto
+                      // This is particularly important so that HttpContet.Request.Scheme will be correct behind a SSL terminating proxy
+                      ForwardedHeaders = ForwardedHeaders.XForwardedFor |
+                      ForwardedHeaders.XForwardedProto
+                  });
+
+                  app.UseAuthentication();
+                  app.UseMvc();
         }
     }
 }
